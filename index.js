@@ -421,7 +421,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           name: args.name,
           nodes: args.nodes || [],
           connections: args.connections || {},
-          active: args.active || false,
           settings: args.settings || {}
         };
         

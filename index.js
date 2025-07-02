@@ -440,7 +440,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         if (args.name !== undefined) updateData.name = args.name;
         if (args.nodes !== undefined) updateData.nodes = args.nodes;
         if (args.connections !== undefined) updateData.connections = args.connections;
-        if (args.active !== undefined) updateData.active = args.active;
         if (args.settings !== undefined) updateData.settings = args.settings;
         
         const response = await n8nClient.put(`/workflows/${args.id}`, updateData);
@@ -467,24 +466,48 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'activate_workflow': {
-        const response = await n8nClient.patch(`/workflows/${args.id}/activate`);
+        // Use update workflow with active: true
+        const workflowResponse = await n8nClient.get(`/workflows/${args.id}`);
+        const workflow = workflowResponse.data;
+        
+        const updateData = {
+          name: workflow.name,
+          nodes: workflow.nodes,
+          connections: workflow.connections,
+          settings: workflow.settings,
+          active: true
+        };
+        
+        const response = await n8nClient.put(`/workflows/${args.id}`, updateData);
         return {
           content: [
             {
               type: 'text',
-              text: JSON.stringify(response.data, null, 2)
+              text: JSON.stringify({ success: true, message: 'Workflow activated', data: response.data }, null, 2)
             }
           ]
         };
       }
 
       case 'deactivate_workflow': {
-        const response = await n8nClient.patch(`/workflows/${args.id}/deactivate`);
+        // Use update workflow with active: false
+        const workflowResponse = await n8nClient.get(`/workflows/${args.id}`);
+        const workflow = workflowResponse.data;
+        
+        const updateData = {
+          name: workflow.name,
+          nodes: workflow.nodes,
+          connections: workflow.connections,
+          settings: workflow.settings,
+          active: false
+        };
+        
+        const response = await n8nClient.put(`/workflows/${args.id}`, updateData);
         return {
           content: [
             {
               type: 'text',
-              text: JSON.stringify(response.data, null, 2)
+              text: JSON.stringify({ success: true, message: 'Workflow deactivated', data: response.data }, null, 2)
             }
           ]
         };

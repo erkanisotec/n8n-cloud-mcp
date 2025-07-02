@@ -4,11 +4,28 @@ A Model Context Protocol (MCP) server that enables AI assistants like Claude to 
 
 ## Features
 
-- 🔄 List and manage n8n workflows
-- 🪝 Discover and trigger webhooks
-- 📊 View execution history and status
-- 🔐 Secure API key authentication
-- ☁️ Full n8n Cloud support
+### 🔄 Workflow Management
+- **List workflows** - Get all workflows with filtering options (active/inactive)
+- **Get workflow details** - Retrieve complete workflow configuration
+- **Create workflow** - Build new workflows programmatically
+- **Update workflow** - Modify existing workflow nodes, connections, and settings
+- **Delete workflow** - Remove workflows from your n8n instance
+- **Activate/Deactivate** - Control workflow execution state
+
+### 🪝 Webhook Operations
+- **List webhooks** - Extract all webhook URLs from a workflow
+- **Call webhooks** - Execute webhooks with GET and POST methods
+- **Test integrations** - Trigger webhook-based workflows
+
+### 📊 Execution Management
+- **List executions** - View workflow run history with status filtering
+- **Get execution details** - Access detailed execution logs and data
+- **Execute workflow** - Manually trigger workflow runs with custom data
+
+### 🏷️ Additional Features
+- **Workflow tags** - Retrieve and manage workflow tags
+- **Error handling** - Comprehensive error messages and debugging
+- **Secure authentication** - API key-based security
 
 ## Installation
 
@@ -78,7 +95,9 @@ Then add to Claude Desktop config:
 
 ## Available Tools
 
-### 1. `list_workflows`
+### Workflow Management
+
+#### 1. `list_workflows`
 List all workflows in your n8n instance.
 
 **Parameters:**
@@ -91,7 +110,7 @@ List all workflows in your n8n instance.
 "Show me the first 10 workflows"
 ```
 
-### 2. `get_workflow`
+#### 2. `get_workflow`
 Get detailed information about a specific workflow.
 
 **Parameters:**
@@ -102,7 +121,73 @@ Get detailed information about a specific workflow.
 "Get details for workflow ABC123"
 ```
 
-### 3. `list_workflow_webhooks`
+#### 3. `create_workflow`
+Create a new workflow.
+
+**Parameters:**
+- `name` (string, required): Workflow name
+- `nodes` (array, required): Array of nodes
+- `connections` (object, required): Node connections
+- `active` (boolean, optional): Whether to activate the workflow
+- `settings` (object, optional): Workflow settings
+
+**Example:**
+```
+"Create a new workflow called 'My Test Workflow'"
+```
+
+#### 4. `update_workflow`
+Update an existing workflow.
+
+**Parameters:**
+- `id` (string, required): Workflow ID
+- `name` (string, optional): New workflow name
+- `nodes` (array, optional): Updated nodes
+- `connections` (object, optional): Updated connections
+- `active` (boolean, optional): Activation status
+- `settings` (object, optional): Updated settings
+
+**Example:**
+```
+"Update workflow ABC123 and rename it to 'Updated Workflow'"
+```
+
+#### 5. `delete_workflow`
+Delete a workflow.
+
+**Parameters:**
+- `id` (string, required): Workflow ID to delete
+
+**Example:**
+```
+"Delete workflow ABC123"
+```
+
+#### 6. `activate_workflow`
+Activate a workflow.
+
+**Parameters:**
+- `id` (string, required): Workflow ID to activate
+
+**Example:**
+```
+"Activate workflow ABC123"
+```
+
+#### 7. `deactivate_workflow`
+Deactivate a workflow.
+
+**Parameters:**
+- `id` (string, required): Workflow ID to deactivate
+
+**Example:**
+```
+"Deactivate workflow ABC123"
+```
+
+### Webhook Operations
+
+#### 8. `list_workflow_webhooks`
 List all webhook triggers in a workflow.
 
 **Parameters:**
@@ -113,7 +198,7 @@ List all webhook triggers in a workflow.
 "Show me all webhooks in workflow ABC123"
 ```
 
-### 4. `call_webhook_get`
+#### 9. `call_webhook_get`
 Trigger a webhook with GET method.
 
 **Parameters:**
@@ -124,7 +209,7 @@ Trigger a webhook with GET method.
 "Call the webhook at https://myapp.app.n8n.cloud/webhook/abc123"
 ```
 
-### 5. `call_webhook_post`
+#### 10. `call_webhook_post`
 Trigger a webhook with POST method.
 
 **Parameters:**
@@ -136,7 +221,9 @@ Trigger a webhook with POST method.
 "Send {name: 'John', email: 'john@example.com'} to webhook abc123"
 ```
 
-### 6. `list_executions`
+### Execution Management
+
+#### 11. `list_executions`
 List workflow executions.
 
 **Parameters:**
@@ -150,7 +237,7 @@ List workflow executions.
 "List executions for workflow ABC123"
 ```
 
-### 7. `get_execution`
+#### 12. `get_execution`
 Get details of a specific execution.
 
 **Parameters:**
@@ -159,6 +246,30 @@ Get details of a specific execution.
 **Example:**
 ```
 "Get details for execution 12345"
+```
+
+#### 13. `execute_workflow`
+Manually trigger a workflow execution.
+
+**Parameters:**
+- `id` (string, required): Workflow ID to execute
+- `data` (object, optional): Data to pass to the workflow
+
+**Example:**
+```
+"Execute workflow ABC123 with data {test: true}"
+```
+
+### Additional Tools
+
+#### 14. `get_workflow_tags`
+Get all workflow tags.
+
+**Parameters:** None
+
+**Example:**
+```
+"Show me all workflow tags"
 ```
 
 ## Usage Examples

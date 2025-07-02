@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Make the file executable for npm global install
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
@@ -159,6 +160,138 @@ const TOOLS = [
       },
       required: ['id']
     }
+  },
+  {
+    name: 'create_workflow',
+    description: 'Create a new workflow',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+          description: 'Workflow name'
+        },
+        nodes: {
+          type: 'array',
+          description: 'Array of nodes for the workflow'
+        },
+        connections: {
+          type: 'object',
+          description: 'Node connections'
+        },
+        active: {
+          type: 'boolean',
+          description: 'Whether to activate the workflow (default: false)'
+        },
+        settings: {
+          type: 'object',
+          description: 'Workflow settings'
+        }
+      },
+      required: ['name', 'nodes', 'connections']
+    }
+  },
+  {
+    name: 'update_workflow',
+    description: 'Update an existing workflow',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'string',
+          description: 'Workflow ID'
+        },
+        name: {
+          type: 'string',
+          description: 'Workflow name'
+        },
+        nodes: {
+          type: 'array',
+          description: 'Array of nodes for the workflow'
+        },
+        connections: {
+          type: 'object',
+          description: 'Node connections'
+        },
+        active: {
+          type: 'boolean',
+          description: 'Whether to activate the workflow'
+        },
+        settings: {
+          type: 'object',
+          description: 'Workflow settings'
+        }
+      },
+      required: ['id']
+    }
+  },
+  {
+    name: 'delete_workflow',
+    description: 'Delete a workflow',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'string',
+          description: 'Workflow ID to delete'
+        }
+      },
+      required: ['id']
+    }
+  },
+  {
+    name: 'activate_workflow',
+    description: 'Activate a workflow',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'string',
+          description: 'Workflow ID to activate'
+        }
+      },
+      required: ['id']
+    }
+  },
+  {
+    name: 'deactivate_workflow',
+    description: 'Deactivate a workflow',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'string',
+          description: 'Workflow ID to deactivate'
+        }
+      },
+      required: ['id']
+    }
+  },
+  {
+    name: 'get_workflow_tags',
+    description: 'Get all workflow tags',
+    inputSchema: {
+      type: 'object',
+      properties: {}
+    }
+  },
+  {
+    name: 'execute_workflow',
+    description: 'Execute a workflow manually',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'string',
+          description: 'Workflow ID to execute'
+        },
+        data: {
+          type: 'object',
+          description: 'Optional data to pass to the workflow'
+        }
+      },
+      required: ['id']
+    }
   }
 ];
 
@@ -273,6 +406,109 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       case 'get_execution': {
         const response = await n8nClient.get(`/executions/${args.id}`);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(response.data, null, 2)
+            }
+          ]
+        };
+      }
+
+      case 'create_workflow': {
+        const workflowData = {
+          name: args.name,
+          nodes: args.nodes || [],
+          connections: args.connections || {},
+          active: args.active || false,
+          settings: args.settings || {}
+        };
+        
+        const response = await n8nClient.post('/workflows', workflowData);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(response.data, null, 2)
+            }
+          ]
+        };
+      }
+
+      case 'update_workflow': {
+        const updateData = {};
+        if (args.name !== undefined) updateData.name = args.name;
+        if (args.nodes !== undefined) updateData.nodes = args.nodes;
+        if (args.connections !== undefined) updateData.connections = args.connections;
+        if (args.active !== undefined) updateData.active = args.active;
+        if (args.settings !== undefined) updateData.settings = args.settings;
+        
+        const response = await n8nClient.put(`/workflows/${args.id}`, updateData);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(response.data, null, 2)
+            }
+          ]
+        };
+      }
+
+      case 'delete_workflow': {
+        const response = await n8nClient.delete(`/workflows/${args.id}`);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ success: true, message: 'Workflow deleted successfully' }, null, 2)
+            }
+          ]
+        };
+      }
+
+      case 'activate_workflow': {
+        const response = await n8nClient.patch(`/workflows/${args.id}/activate`);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(response.data, null, 2)
+            }
+          ]
+        };
+      }
+
+      case 'deactivate_workflow': {
+        const response = await n8nClient.patch(`/workflows/${args.id}/deactivate`);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(response.data, null, 2)
+            }
+          ]
+        };
+      }
+
+      case 'get_workflow_tags': {
+        const response = await n8nClient.get('/tags');
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(response.data, null, 2)
+            }
+          ]
+        };
+      }
+
+      case 'execute_workflow': {
+        const executeData = {
+          data: args.data || {}
+        };
+        
+        const response = await n8nClient.post(`/workflows/${args.id}/execute`, executeData);
         return {
           content: [
             {

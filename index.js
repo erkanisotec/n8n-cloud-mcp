@@ -466,20 +466,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'activate_workflow': {
-        // Use update workflow without active field (it's read-only)
-        const workflowResponse = await n8nClient.get(`/workflows/${args.id}`);
-        const workflow = workflowResponse.data;
-        
-        // Remove read-only fields
-        const updateData = {
-          name: workflow.name,
-          nodes: workflow.nodes,
-          connections: workflow.connections,
-          settings: workflow.settings
-        };
-        
-        // Activate using the activate endpoint
-        const response = await n8nClient.patch(`/workflows/${args.id}/activate`);
+        // Activate using the activate endpoint with empty body
+        const response = await n8nClient.post(`/workflows/${args.id}/activate`, {});
         return {
           content: [
             {
@@ -491,20 +479,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'deactivate_workflow': {
-        // Use update workflow without active field (it's read-only)
-        const workflowResponse = await n8nClient.get(`/workflows/${args.id}`);
-        const workflow = workflowResponse.data;
-        
-        // Remove read-only fields
-        const updateData = {
-          name: workflow.name,
-          nodes: workflow.nodes,
-          connections: workflow.connections,
-          settings: workflow.settings
-        };
-        
-        // Deactivate using the deactivate endpoint
-        const response = await n8nClient.patch(`/workflows/${args.id}/deactivate`);
+        // Deactivate using the deactivate endpoint with empty body
+        const response = await n8nClient.post(`/workflows/${args.id}/deactivate`, {});
         return {
           content: [
             {

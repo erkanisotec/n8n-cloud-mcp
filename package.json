@@ -1,0 +1,42 @@
+{
+  "name": "@erkanisotec/n8n-cloud-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for n8n Cloud API integration with Claude and other AI assistants",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "n8n-cloud-mcp": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mcp",
+    "n8n",
+    "claude",
+    "ai",
+    "workflow",
+    "automation",
+    "model-context-protocol"
+  ],
+  "author": "erkanisotec",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.1",
+    "axios": "^1.7.4",
+    "dotenv": "^16.4.5"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erkanisotec/n8n-cloud-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/erkanisotec/n8n-cloud-mcp/issues"
+  },
+  "homepage": "https://github.com/erkanisotec/n8n-cloud-mcp#readme"
+}
